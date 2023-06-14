@@ -1,0 +1,9 @@
+*.json
+db.sqlite3
+node_modules
+main/migrations
+venv
+templates
+.idea
+general.log
+.gitignore
