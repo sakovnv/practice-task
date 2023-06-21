@@ -23,3 +23,7 @@ class LoginForm(AuthenticationForm):
 
     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs=form_attr))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs=form_attr))
+
+
+class FileUploadForm(forms.Form):
+    file = forms.FileField(label='Choose File')
