@@ -2,6 +2,8 @@
 db.sqlite3
 node_modules
 main/migrations
+main/static/model
+variables
 venv
 templates
 .idea
