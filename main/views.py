@@ -136,7 +136,9 @@ class Computations(DataMixin, TemplateView):
             self.request.user.computation_quantity += 1
             self.request.user.save()
 
-            Computation.objects.create(author=self.request.user, image_array=serialized, results=ser_predictions)
+            computation = Computation.objects.create(author=self.request.user, image_array=serialized, results=ser_predictions)
+
+            logger.info(f'{request.user} did the calculation. id: {computation.pk}')
 
             return render(request, self.template_name, data)
 
@@ -179,7 +181,7 @@ def save_as_pdf(request):
         elements = [table]
         pdf.build(elements)
 
-        
+        logger.info(f'{request.user} saved the calculation to pdf. Data: {data}')
 
         return response
 
@@ -192,5 +194,7 @@ def save_as_json(request):
 
         response = HttpResponse(json_data, content_type='application/json')
         response['Content-Disposition'] = 'attachment; filename="data.json"'
+
+        logger.info(f'{request.user} saved the calculation to json. Data: {data}')
 
         return response
