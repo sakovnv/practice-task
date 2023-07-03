@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <section class="d-flex flex-column">
+        <h2>User information:</h2>
+        <span>Username: {{ user.username }}</span>
+        <span>First Name: {{ user.first_name }}</span>
+        <span>Last Name: {{ user.last_name }}</span>
+        <span>Email: {{ user.email }}</span>
+        <span>Computation quantity: {{ user.computation_quantity }}</span>
+        <span>Last Login: {{ user.last_login }}</span>
+        <span>Date Joined: {{ user.date_joined }}</span>
+    </section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load static %}
+
+<html lang="en" xmlns="">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="{% static "lib/css/bootstrap.min.css" %}">
+</head>
+<body>
+    <main class="d-flex flex-nowrap h-100">
+        <aside class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4">Sidebar</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{% url 'home' %}" class="nav-link active" aria-current="page">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'profile' %}" class="nav-link link-body-emphasis">
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'computations' %}" class="nav-link link-body-emphasis">
+                        Computations
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <div class="d-flex justify-content-between auth">
+                    {% if request.user.is_authenticated %}
+                        <img src="https://w7.pngwing.com/pngs/419/473/png-transparent-computer-icons-user-profile-login-user-heroes-sphere-black-thumbnail.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                        <span>{{ user.username }}</span>
+                        <a href="{% url "logout" %}" class="d-flex align-items-center link-body-emphasis text-decoration-none">Logout</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="align-items-center link-body-emphasis text-decoration-none">Register</a>
+                        <a href="{% url 'login' %}" class="align-items-center link-body-emphasis text-decoration-none">Login</a>
+                    {% endif %}
+                </a>
+            </div>
+        </aside>
+        <section class="container">
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+</body>
+
+</html>

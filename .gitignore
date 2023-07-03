@@ -5,6 +5,5 @@ main/migrations
 main/static/model
 variables
 venv
-templates
 .idea
 general.log

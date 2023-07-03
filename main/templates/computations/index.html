@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <form action="{% url 'computations' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Load</button>
+        </form>
+
+        {% if predictions %}
+            <section class="d-flex flex-column rounded-2 mt-2">
+                <h2 class="d-block">Results: </h2>
+                <img src="data:image/jpeg;base64,{{ image }}" alt="Uploaded Image" class='img-fluid mt-1' width='48'>
+                <ul id='data-list' class="list-group mt-1">
+                    {% for key, value in predictions %}
+                        <li class="list-group-item {% if max_item == value %}list-group-item-success{% endif %}">{{ key }}: {{ value }}</li>
+                    {% endfor %}
+                </ul>
+                {% csrf_token %}
+                <input type="hidden" id="predictions-hidden" value="{{ predictions_dict }}">
+                <button id="save-pdf" class='btn btn-warning mt-1'>Save as PDF</button>
+                <button id="save-json" class='btn btn-warning mt-1'>Save as JSON</button>
+            </section>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+            $(document).ready(function() {
+                let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+                $("#save-pdf").click(function() {
+                
+                    var data = $("#predictions-hidden")[0].value; 
+
+                    $.ajax({
+                        headers: {'X-CSRFToken': csrftoken},
+                        url: "/computations/save_as_pdf", 
+                        type: "POST",
+                        data: {
+                        "data": data
+                        },
+                        success: function(response) {
+                            var blob = new Blob([response], { type: "application/pdf" });
+                            console.log(response)
+                            var isIE = false || !!document.documentMode;
+                            if (isIE) {
+                                window.navigator.msSaveBlob(blob, "results.pdf");
+                            } else {
+                                var url = window.URL || window.webkitURL;
+                                link = url.createObjectURL(blob);
+                                var a = $("<a />");
+                                a.attr("download", "results.pdf");
+                                a.attr("href", link);
+                                $("body").append(a);
+                                a[0].click();
+                                $("body").remove(a);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                        
+                        }
+                    });
+                });
+
+                $("#save-json").click(function() {
+                    var data = $("#predictions-hidden")[0].value; 
+                    console.log(data);
+
+                    $.ajax({
+                        headers: {'X-CSRFToken': csrftoken},
+                        url: "/computations/save_as_json",
+                        type: "POST",
+                        data: {
+                        "data": data
+                        },
+                        success: function(response) {
+                            var data = JSON.stringify(response);
+                            var blob = new Blob([data], { type: "application/json" });
+                            console.log(response)
+                            var isIE = false || !!document.documentMode;
+                            if (isIE) {
+                                window.navigator.msSaveBlob(response, "results.json");
+                            } else {
+                                var url = window.URL || window.webkitURL;
+                                link = url.createObjectURL(blob);
+                                var a = $("<a />");
+                                a.attr("download", "results.json");
+                                a.attr("href", link);
+                                $("body").append(a);
+                                a[0].click();
+                                $("body").remove(a);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                        }
+                    });
+                });
+            });
+            </script>
+        {% endif %}
+    {% else %}
+        <h2>Вы не авторизованы!</h2>
+        <a href="{% url 'login' %}" class="btn btn-danger">Войти</a>
+    {% endif %}
+{% endblock %}
